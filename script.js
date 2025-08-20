@@ -1,4 +1,5 @@
-const button = document.getElementById("search-button");
+
+/*const button = document.getElementById("search-button");
 const input = document.getElementById("city-input");
 
 const cityName = document.getElementById("city-name");
@@ -17,4 +18,41 @@ button.addEventListener("click", async () => {
     cityName.innerText = `${result.location.name}, ${result.location.region}, ${result.location.country}`;
     cityTime.innerText = result.location.localtime;
     cityTemp.innerText = result.current.temp_c;
+});
+*/
+
+
+const button = document.getElementById("search-button");
+const input = document.getElementById("city-input");
+
+const cityName = document.getElementById("city-name");
+const cityTime = document.getElementById("city-time");
+const cityTemp = document.getElementById("city-temp");
+
+async function getData(city) {
+    try {
+        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=eab3abbca8a14eb4a3a171228251708&q=${city}&aqi=yes`);
+        const data = await response.json();
+
+        if (data.error) {
+            alert("City not found. Please try another.");
+            return;
+        }
+
+        cityName.innerText = `${data.location.name}, ${data.location.region} - ${data.location.country}`;
+        cityTime.innerText = data.location.localtime;
+        cityTemp.innerText = `${data.current.temp_c}°C`;
+    } catch (error) {
+        alert("Failed to fetch weather data.");
+        console.error(error);
+    }
+}
+
+button.addEventListener("click", () => {
+    const value = input.value.trim();
+    if (value) {
+        getData(value);
+    } else {
+        alert("Please enter a city name.");
+    }
 });
